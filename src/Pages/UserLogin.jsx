@@ -1,15 +1,15 @@
+
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 
-const AdminLogin = () => {
+const UserLogin = () => {
   const [formData, setFormData] = useState({
     Email: "",
     Password: "",
   });
 
   const [message, setMessage] = useState("");
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,11 +19,15 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/admin/login", formData);
-      setMessage("Login successful!");
-      // store token in localStorage if needed
-      // localStorage.setItem("token", res.data.token);
-       navigate("/")      
+      const res = await axios.post("http://localhost:3000/api/auth/login", formData);
+      setMessage("Login successful! Redirecting...");
+
+      localStorage.setItem("userToken", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
+
+      setTimeout(() => navigate("/"), 1500);
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed");
     }
@@ -33,7 +37,7 @@ const AdminLogin = () => {
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
       <div className="bg-zinc-900 p-8 rounded-xl shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold text-white mb-6 text-center">
-          Admin Login
+          User Login
         </h1>
         {message && <p className="text-yellow-400 mb-4">{message}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -62,9 +66,9 @@ const AdminLogin = () => {
             Login
           </button>
           <div className="text-center mt-4">
-              <Link to="/admin/signup" className="text-yellow-400 hover:underline">
-                Don't have an account? Sign Up
-              </Link>
+            <Link to="/signup" className="text-yellow-400 hover:underline">
+              Don’t have an account? Sign Up
+            </Link>
           </div>
         </form>
       </div>
@@ -72,4 +76,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default UserLogin;

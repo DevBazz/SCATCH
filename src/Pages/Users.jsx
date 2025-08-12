@@ -1,158 +1,151 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-const UsersPage = () => {
+
+const Users = () => {
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [editMode, setEditMode] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1)
-  const usersPerPage = 10
-  const indexOfLastUser = currentPage * usersPerPage
-  const indexOfFirstUser = indexOfLastUser - usersPerPage
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 10;
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser)
-  const totalPages = Math.ceil(users.length / usersPerPage)
-
-
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('https://dummyjson.com/users');
-      setUsers(res.data.users);
+      const res = await axios.get("http://localhost:3000/api/users");
+      setUsers(res.data);
     } catch (error) {
-      console.error('Failed to fetch users:', error);
+      console.error("Failed to fetch users:", error);
     }
   };
 
-  const handleDelete = (id) => {
-    setUsers(users.filter((user) => user.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/users/${id}`);
+      setUsers((prev) => prev.filter((user) => user._id !== id));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
 
-  const handleEdit = (user) => {
-    setSelectedUser(user);
-    setEditMode(true);
-  };
+  const handleRoleChange = async (userId, newRole) => {
+       setUsers((prev) =>
+        prev.map((user) =>
+          user._id === userId ? { ...user, Role: newRole } : user
+        )
+      );
 
-  const handleUpdate = (updatedUser) => {
-    setUsers(users.map((user) => (user.id === updatedUser.id ? updatedUser : user)));
-    setEditMode(false);
-    setSelectedUser(null);
-  };
+      try {
+         await axios.put(`http://localhost:3000/api/users/${userId}`, { newRole });
+  }   catch (error) {
+    console.error("Error updating user role:", error);
+  }
+}
+    
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(users.length / usersPerPage);
 
   const handlePrev = () => {
-    if(currentPage > 1) return setCurrentPage(prev => prev - 1)
-  }
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
 
   const handleNext = () => {
-    if(currentPage < totalPages) return setCurrentPage(prev => prev + 1)
-  }
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
 
   return (
-    <div className="w-[83vw] h-screen bg-[#0f172a] text-white p-6 overflow-auto">
+    <div className="w-[83vw] h-screen bg-gray-50 text-gray-900 p-8 overflow-auto">
       <h1 className="text-3xl font-bold mb-6">Users Management</h1>
 
-      {editMode && selectedUser ? (
-        <div className="mb-8 bg-gray-800 p-4 rounded">
-          <h2 className="text-xl mb-4">Edit User</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleUpdate(selectedUser);
-            }}
-            className="grid grid-cols-2 gap-4"
-          >
-            <input
-              className="p-2 rounded text-black"
-              type="text"
-              value={selectedUser.firstName}
-              onChange={(e) => setSelectedUser({ ...selectedUser, firstName: e.target.value })}
-              placeholder="First Name"
-            />
-            <input
-              className="p-2 rounded text-black"
-              type="text"
-              value={selectedUser.lastName}
-              onChange={(e) => setSelectedUser({ ...selectedUser, lastName: e.target.value })}
-              placeholder="Last Name"
-            />
-            <input
-              className="p-2 rounded text-black"
-              type="email"
-              value={selectedUser.email}
-              onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
-              placeholder="Email"
-            />
-            <button type="submit" className="col-span-2 bg-blue-600 p-2 rounded hover:bg-blue-700">
-              Update User
-            </button>
-          </form>
-        </div>
-      ) : null}
-
-      <table className="w-full table-auto text-left border border-gray-700">
-        <thead className="bg-gray-700">
-          <tr>
-            <th className="p-3">ID</th>
-            <th className="p-3">Name</th>
-            <th className="p-3">Email</th>
-            <th className="p-3">Phone</th>
-            <th className="p-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentUsers.map((user) => (
-            <tr key={user.id} className="border-t border-gray-700">
-              <td className="p-3">{user.id}</td>
-              <td className="p-3">{user.firstName} {user.lastName}</td>
-              <td className="p-3">{user.email}</td>
-              <td className="p-3">{user.phone}</td>
-              <td className="p-3 space-x-2">
-                <button
-                  className="bg-yellow-500 hover:bg-yellow-600 px-3 py-1 rounded"
-                  onClick={() => handleEdit(user)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  Delete
-                </button>
-              </td>
+      <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-200 bg-white">
+        <table className="min-w-full text-left">
+          <thead className="bg-gray-100 border-b border-gray-200">
+            <tr>
+              <th className="py-3 px-4 font-semibold">ID</th>
+              <th className="py-3 px-4 font-semibold">Name</th>
+              <th className="py-3 px-4 font-semibold">Email</th>
+              <th className="py-3 px-4 font-semibold">Role</th>
+              <th className="py-3 px-4 font-semibold">Manage</th>
+              <th className="py-3 px-4 font-semibold">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-        
-                <div className="m-auto mt-3 mb-4 flex justify-center items-center gap-4 text-white">
+          </thead>
+          <tbody>
+            {currentUsers.map((user) => (
+              <tr
+                key={user._id}
+                className="hover:bg-gray-50 transition"
+              >
+                <td className="py-3 px-4 text-gray-600 font-mono">{user._id}</td>
+                <td className="py-3 px-4">{user.Name}</td>
+                <td className="py-3 px-4">{user.Email}</td>
+                <td className="py-3 px-4 font-semibold text-gray-700">
+                  {user.Role}
+                </td>
+                <td className="py-3 px-4">
+                  <select
+                    value={user.Role}
+                    onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                    className="border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  >
+                    <option value="User">User</option>
+                    <option value="Admin">Admin</option>
+                  </select>
+                </td>
+                <td className="py-3 px-4 space-x-2">
+                  <button
+                    onClick={() => alert("Edit functionality not implemented")}
+                    className="bg-yellow-400 hover:bg-yellow-500 px-3 py-1 rounded text-sm font-medium transition"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(user._id)}
+                    className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm font-medium text-white transition"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {currentUsers.length === 0 && (
+              <tr>
+                <td colSpan={6} className="text-center py-6 text-gray-500 italic">
+                  No users found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="m-auto mt-6 flex justify-center items-center gap-4">
         <button
           onClick={handlePrev}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-teal-500 hover:bg-white hover:text-black disabled:opacity-50 rounded"
+          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 rounded transition"
         >
           Previous
         </button>
 
-        <span className="text-lg">
+        <span className="text-lg font-medium">
           Page {currentPage} of {totalPages}
         </span>
 
         <button
           onClick={handleNext}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-teal-500 hover:bg-white hover:text-black disabled:opacity-50 rounded"
+          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 rounded transition"
         >
           Next
         </button>
       </div>
-
     </div>
   );
 };
 
-export default UsersPage;
+export default Users;

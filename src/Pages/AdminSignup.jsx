@@ -18,7 +18,7 @@ const AdminSignup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/signup", {
+      const res = await axios.post("http://localhost:3000/api/auth/admin/signup", {
         ...formData,
       });
       setMessage("Signup successful! You can now log in.");

@@ -2,14 +2,14 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 
-const AdminLogin = () => {
+const UserSignup = () => {
   const [formData, setFormData] = useState({
+    Name: "",
     Email: "",
     Password: "",
   });
 
   const [message, setMessage] = useState("");
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,13 +19,11 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/admin/login", formData);
-      setMessage("Login successful!");
-      // store token in localStorage if needed
-      // localStorage.setItem("token", res.data.token);
-       navigate("/")      
+      const res = await axios.post("http://localhost:3000/api/auth/signup", formData);
+      setMessage("Signup successful! Redirecting...");
+      setTimeout(() => navigate("/login"), 1500); // redirect after signup
     } catch (err) {
-      setMessage(err.response?.data?.message || "Login failed");
+      setMessage(err.response?.data?.message || "Signup failed");
     }
   };
 
@@ -33,10 +31,19 @@ const AdminLogin = () => {
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
       <div className="bg-zinc-900 p-8 rounded-xl shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold text-white mb-6 text-center">
-          Admin Login
+          User Sign Up
         </h1>
         {message && <p className="text-yellow-400 mb-4">{message}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            name="Name"
+            placeholder="Full Name"
+            value={formData.Name}
+            onChange={handleChange}
+            className="w-full p-3 rounded bg-zinc-800 text-white focus:outline-none"
+            required
+          />
           <input
             type="email"
             name="Email"
@@ -59,12 +66,12 @@ const AdminLogin = () => {
             type="submit"
             className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold p-3 rounded"
           >
-            Login
+            Sign Up
           </button>
           <div className="text-center mt-4">
-              <Link to="/admin/signup" className="text-yellow-400 hover:underline">
-                Don't have an account? Sign Up
-              </Link>
+            <Link to="/login" className="text-yellow-400 hover:underline">
+              Already have an account? Log in
+            </Link>
           </div>
         </form>
       </div>
@@ -72,4 +79,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default UserSignup;

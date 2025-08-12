@@ -66,7 +66,7 @@ const ProductDetails = () => {
           )}
 
           <p className="text-sm text-gray-400">Category: {product.Category}</p>
-          <p className="text-base leading-relaxed">{product.Description}</p>
+          <p className="text-base leading-wider tracking-5">{product.Description}</p>
         </div>
       </div>
     </div>

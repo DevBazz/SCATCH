@@ -8,6 +8,8 @@ import  Settings from "./Pages/Settings"
 import AdminSignup from "./Pages/AdminSignup"
 import AdminLogin from "./Pages/AdminLogin"
 import ProductDetails from "./Pages/ProductDetails"
+import UserSignup from "./Pages/UserSignup"
+import UserLogin from "./Pages/UserLogin"
 
 const App = () => {
   return(
@@ -22,7 +24,9 @@ const App = () => {
       <Route path="products/:id" element={<ProductDetails />} />
       </Route>
       <Route path="admin/signup" element={<AdminSignup /> } />
-      <Route path="admin/login" element={<AdminLogin />} /> 
+      <Route path="admin/login" element={<AdminLogin />} />
+      <Route path="signup" element={<UserSignup />}/>
+      <Route path="login" element={<UserLogin />} />
     </Routes>
    </Router>
 
