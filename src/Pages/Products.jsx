@@ -4,6 +4,7 @@ import { FiUpload } from "react-icons/fi";
 import { BiSearch } from "react-icons/bi";
 import ProductCard from "../components/ProductsCard";
 
+
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,10 +25,13 @@ const Products = () => {
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(products.length / productPerPage);
 
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const productsData = await axios.get("http://localhost:3000/api/products");
+        const productsData = await axios.get("http://localhost:3000/api/products", {
+          withCredentials: true
+        });
         setProducts(productsData.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -83,7 +87,9 @@ const Products = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/products/${id}`);
+      await axios.delete(`http://localhost:3000/api/products/${id}`, {
+        withCredentials: true
+      });
       setProducts(prev => prev.filter(product => product._id !== id));
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -92,7 +98,9 @@ const Products = () => {
 
   const handleEdit = async (id, updatedProduct) => {
     try {
-      const res = await axios.put(`http://localhost:3000/api/products/${id}`, updatedProduct);
+      const res = await axios.put(`http://localhost:3000/api/products/${id}`, updatedProduct, {
+        withCredentials: true
+      });
       setProducts(prev => prev.map(product => product._id === id ? res.data : product));
     } catch (error) {
       console.error("Error updating product:", error);

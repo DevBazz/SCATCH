@@ -14,7 +14,9 @@ const Users = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/users");
+      const res = await axios.get("http://localhost:3000/api/users", {
+        withCredentials: true
+      });
       setUsers(res.data);
     } catch (error) {
       console.error("Failed to fetch users:", error);
@@ -23,7 +25,9 @@ const Users = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/users/${id}`);
+      await axios.delete(`http://localhost:3000/api/users/${id}`, {
+        withCredentials: true
+      });
       setUsers((prev) => prev.filter((user) => user._id !== id));
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -38,7 +42,9 @@ const Users = () => {
       );
 
       try {
-         await axios.put(`http://localhost:3000/api/users/${userId}`, { newRole });
+         await axios.put(`http://localhost:3000/api/users/${userId}`, { newRole }, {
+          withCredentials: true
+         });
   }   catch (error) {
     console.error("Error updating user role:", error);
   }

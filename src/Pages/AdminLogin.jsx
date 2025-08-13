@@ -6,7 +6,7 @@ const AdminLogin = () => {
   const [formData, setFormData] = useState({
     Email: "",
     Password: "",
-  });
+  }, );
 
   const [message, setMessage] = useState("");
 
@@ -19,10 +19,11 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/admin/login", formData);
+      const res = await axios.post("http://localhost:3000/api/auth/admin/login", formData, {
+        withCredentials: true
+      });
       setMessage("Login successful!");
-      // store token in localStorage if needed
-      // localStorage.setItem("token", res.data.token);
+      
        navigate("/")      
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed");

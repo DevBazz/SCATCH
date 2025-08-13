@@ -4,12 +4,11 @@ import { RiDashboardFill } from "react-icons/ri";
 import { TfiDropboxAlt } from "react-icons/tfi";
 import { FaCartFlatbed } from "react-icons/fa6";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
-import { IoMdNotifications } from "react-icons/io";
 import { IoSettings } from "react-icons/io5";
 
 const SideBar = () => {
     return(
-        <section className="h-screen w-[17vw] bg-black sticky top-0 ">
+        <section className="h-screen w-[17vw] bg-gray-900 sticky top-0 ">
           <div className="flex flex-col  justify-center items-center gap-16">
 
             <NavLink to="/" className="w-[15vw] h-[5vh] flex pl-4 gap-3 text-2xl mt-10 text-white">

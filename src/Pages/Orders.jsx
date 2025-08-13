@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaTrash, FaSearch, FaSortAmountDown } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -11,9 +12,7 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         const res = await axios.get("http://localhost:3000/api/orders", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Adjust if token is stored differently
-          },
+         withCredentials: true,
         });
 
         
@@ -39,7 +38,7 @@ const handleStatusChange = async (orderId, newStatus) => {
   try {
     await axios.put(`http://localhost:3000/api/orders/${orderId}`, {
       status: newStatus,
-    });
+    }, {withCredentials: true});
 
     setOrders((prev) =>
       prev.map((order) =>
@@ -56,7 +55,9 @@ const handleStatusChange = async (orderId, newStatus) => {
 
   const handleDelete = async (orderId) => {
   try {
-    await axios.delete(`http://localhost:3000/api/orders/${orderId}`);
+    await axios.delete(`http://localhost:3000/api/orders/${orderId}`, {
+      withCredentials: true,
+    });
     setOrders((prev) => prev.filter((order) => order.id !== orderId));
     console.log("Order deleted successfully");
   } catch (error) {
@@ -107,7 +108,13 @@ const handleStatusChange = async (orderId, newStatus) => {
           <tbody>
             {filteredOrders.map((order) => (
               <tr key={order.id} className="hover:bg-gray-50 transition">
-                <td className="py-3 px-4 text-gray-600 font-mono">{order.id}</td>
+                <td className="py-3 px-4 text-gray-600 font-mono">
+                  <Link
+                   to={`/orders/${order.id}`}
+                    className="text-blue-600 hover:underline">
+                    {order.id}
+                    </Link>
+                </td>
                 <td className="py-3 px-4">{order.customer}</td>
                 <td className="py-3 px-4">{order.date}</td>
                 <td className="py-3 px-4 font-semibold">{order.amount}</td>

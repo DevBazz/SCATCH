@@ -10,6 +10,7 @@ import AdminLogin from "./Pages/AdminLogin"
 import ProductDetails from "./Pages/ProductDetails"
 import UserSignup from "./Pages/UserSignup"
 import UserLogin from "./Pages/UserLogin"
+import OrderDetails from "./Pages/OrderDetails"
 
 const App = () => {
   return(
@@ -22,6 +23,7 @@ const App = () => {
       <Route path="users" element={<Users />} />
       <Route path="settings" element={<Settings />} />
       <Route path="products/:id" element={<ProductDetails />} />
+      <Route path="orders/:id" element={<OrderDetails />}/>
       </Route>
       <Route path="admin/signup" element={<AdminSignup /> } />
       <Route path="admin/login" element={<AdminLogin />} />
