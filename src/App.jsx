@@ -11,6 +11,8 @@ import ProductDetails from "./Pages/ProductDetails"
 import UserSignup from "./Pages/UserSignup"
 import UserLogin from "./Pages/UserLogin"
 import OrderDetails from "./Pages/OrderDetails"
+import Posts from "./Pages/Posts"
+import CreatePost from "./Pages/CreatePost"
 
 const App = () => {
   return(
@@ -20,6 +22,8 @@ const App = () => {
       <Route index  element={<Dashboard />}/>
       <Route path="products" element={<Products />} />
       <Route path="orders" element={<Orders />} />
+      <Route path="posts" element={<Posts />}/>
+      <Route path="create-post" element={<CreatePost />}/>
       <Route path="users" element={<Users />} />
       <Route path="settings" element={<Settings />} />
       <Route path="products/:id" element={<ProductDetails />} />

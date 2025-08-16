@@ -4,6 +4,7 @@ import { RiDashboardFill } from "react-icons/ri";
 import { TfiDropboxAlt } from "react-icons/tfi";
 import { FaCartFlatbed } from "react-icons/fa6";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
+import { MdPostAdd } from "react-icons/md";
 import { IoSettings } from "react-icons/io5";
 
 const SideBar = () => {
@@ -30,6 +31,11 @@ const SideBar = () => {
                <NavLink to="/orders" className="flex w-full pl-4 items-center gap-5 hover:text-white">
                 <FaCartFlatbed />
                 <p>Orders</p>
+                </NavLink>
+
+              <NavLink to="/posts" className="flex w-full pl-4 items-center gap-5 hover:text-white">
+                <MdPostAdd />
+                <p>Posts</p>
                 </NavLink>
 
                 <NavLink to="/users" className="flex w-full pl-4 items-center gap-5 hover:text-white">

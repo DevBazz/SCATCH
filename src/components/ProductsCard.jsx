@@ -53,20 +53,40 @@ const ProductCard = ({ product, handleDelete, handleEdit }) => {
           </div>
 
           {/* Product Info */}
-          <div className="mt-4 text-gray-800 space-y-1 flex-grow">
-            <p className="text-sm text-gray-500">
-              {product.Category || "Uncategorized"}
-            </p>
-            <h3 className="text-base font-semibold leading-tight line-clamp-2 h-[40px] mt-1">
-              {product.Title}
-            </h3>
-            <p className="text-lg font-bold text-gray-900">${product.Price}</p>
-            {product.Discount > 0 && (
-              <p className="text-sm text-green-600 font-medium">
-                {product.Discount}% OFF
-              </p>
-            )}
-          </div>
+          {/* Product Info */}
+<div className="mt-4 text-gray-800 space-y-1 flex-grow">
+  <p className="text-sm text-gray-500">
+    {product.Category || "Uncategorized"}
+  </p>
+  <h3 className="text-base font-semibold leading-tight line-clamp-2 h-[40px] mt-1">
+    {product.Title}
+  </h3>
+
+  {product.Discount > 0 ? (
+    <div className="flex items-center gap-2">
+      <span className="text-gray-500 line-through">
+        ${parseFloat(product.Price).toFixed(2)}
+      </span>
+      <span className="text-lg font-bold text-green-600">
+        ${(
+          parseFloat(product.Price) -
+          (parseFloat(product.Price) * parseFloat(product.Discount)) / 100
+        ).toFixed(2)}
+      </span>
+    </div>
+  ) : (
+    <p className="text-lg font-bold text-gray-900">
+      ${parseFloat(product.Price).toFixed(2)}
+    </p>
+  )}
+
+  {product.Discount > 0 && (
+    <p className="text-sm text-green-600 font-medium">
+      {product.Discount}% OFF
+    </p>
+  )}
+</div>
+
         </Link>
 
         {/* Action Buttons */}

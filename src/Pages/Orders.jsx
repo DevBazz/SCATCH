@@ -6,16 +6,15 @@ import { Link } from "react-router-dom";
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortStatus, setSortStatus] = useState("");
 
-  
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const res = await axios.get("http://localhost:3000/api/orders", {
-         withCredentials: true,
+          withCredentials: true,
         });
 
-        
         const formattedOrders = res.data.map((order) => ({
           id: order._id,
           customer: order.UserID?.Name || "Unknown User",
@@ -33,50 +32,51 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await axios.put(
+        `http://localhost:3000/api/orders/${orderId}`,
+        { status: newStatus },
+        { withCredentials: true }
+      );
 
-const handleStatusChange = async (orderId, newStatus) => {
-  try {
-    await axios.put(`http://localhost:3000/api/orders/${orderId}`, {
-      status: newStatus,
-    }, {withCredentials: true});
-
-    setOrders((prev) =>
-      prev.map((order) =>
-        order.id === orderId ? { ...order, status: newStatus } : order
-      )
-    );
-
-    console.log(`Order ${orderId} status updated to ${newStatus}`);
-  } catch (error) {
-    console.error("Error updating order status:", error);
-  }
-};
-
+      setOrders((prev) =>
+        prev.map((order) =>
+          order.id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
 
   const handleDelete = async (orderId) => {
-  try {
-    await axios.delete(`http://localhost:3000/api/orders/${orderId}`, {
-      withCredentials: true,
-    });
-    setOrders((prev) => prev.filter((order) => order.id !== orderId));
-    console.log("Order deleted successfully");
-  } catch (error) {
-    console.error("Error deleting order:", error);
-  }
-};
+    try {
+      await axios.delete(`http://localhost:3000/api/orders/${orderId}`, {
+        withCredentials: true,
+      });
+      setOrders((prev) => prev.filter((order) => order.id !== orderId));
+    } catch (error) {
+      console.error("Error deleting order:", error);
+    }
+  };
 
-
-  const filteredOrders = orders.filter(
-    (order) =>
-      order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredOrders = orders
+    .filter(
+      (order) =>
+        order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.id.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((order) =>
+      sortStatus ? order.status.toLowerCase() === sortStatus.toLowerCase() : true
+    );
 
   return (
     <div className="w-[83vw] h-screen bg-gray-50 text-gray-900 p-8 overflow-y-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Orders</h1>
         <div className="flex gap-4">
+          {/* Search */}
           <div className="relative">
             <input
               type="text"
@@ -87,9 +87,22 @@ const handleStatusChange = async (orderId, newStatus) => {
             />
             <FaSearch className="absolute left-3 top-3 text-gray-400" />
           </div>
-          <button className="flex items-center gap-2 bg-white border border-gray-300 px-4 py-2 rounded shadow-sm hover:bg-gray-100 transition">
-            <FaSortAmountDown /> Sort
-          </button>
+
+          {/* Sort by Status */}
+          <div className="flex items-center gap-2 bg-white border border-gray-300 px-4 py-2 rounded shadow-sm">
+            <FaSortAmountDown />
+            <select
+              value={sortStatus}
+              onChange={(e) => setSortStatus(e.target.value)}
+              className="bg-transparent outline-none"
+            >
+              <option value="">All Status</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Pending">Pending</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -110,10 +123,11 @@ const handleStatusChange = async (orderId, newStatus) => {
               <tr key={order.id} className="hover:bg-gray-50 transition">
                 <td className="py-3 px-4 text-gray-600 font-mono">
                   <Link
-                   to={`/orders/${order.id}`}
-                    className="text-blue-600 hover:underline">
+                    to={`/orders/${order.id}`}
+                    className="text-blue-600 hover:underline"
+                  >
                     {order.id}
-                    </Link>
+                  </Link>
                 </td>
                 <td className="py-3 px-4">{order.customer}</td>
                 <td className="py-3 px-4">{order.date}</td>

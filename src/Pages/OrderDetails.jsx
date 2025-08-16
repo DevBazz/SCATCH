@@ -10,7 +10,9 @@ const OrderDetails = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/orders/${id}`);
+        const res = await axios.get(`http://localhost:3000/api/orders/${id}`, {
+          withCredentials: true
+        });
         setOrder(res.data)
       } catch (error) {
         console.error("Error fetching order:", error);

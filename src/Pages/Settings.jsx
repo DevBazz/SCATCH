@@ -36,10 +36,10 @@ const Settings = () => {
   const handleSubmit = async () => {
     try {
       const data = new FormData();
-      data.append('Name', formData.name);
-      data.append('Email', formData.email);
-      data.append('Password', formData.password);
-      if (formData.image) data.append('Image', formData.image);
+      data.append('Name', formData.Name);
+      data.append('Email', formData.Email);
+      data.append('Password', formData.Password);
+      if (formData.Image) data.append('Image', formData.Image);
 
       const res = await axios.put('http://localhost:3000/api/users/updateAdmin', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
