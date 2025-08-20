@@ -1,37 +1,45 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const Posts = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const posts = [
-    {
-      id: 1,
-      title: "First Post",
-      excerpt: "This is a short description of the first post...",
-      date: "2025-08-15",
-    },
-    {
-      id: 2,
-      title: "Second Post",
-      excerpt: "This is a short description of the second post...",
-      date: "2025-08-14",
-    },
-    {
-      id: 3,
-      title: "Third Post",
-      excerpt: "This is a short description of the third post...",
-      date: "2025-08-13",
-    },
-  ];
+  // Fetch posts from the backend
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/posts");
+        setPosts(response.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+        setError("Failed to load posts. Please try again later.");
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, []);
 
   // Filter posts based on search term
   const filteredPosts = posts.filter(
     (post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+      post.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 px-6 py-10">
@@ -58,26 +66,57 @@ const Posts = () => {
       </div>
 
       {/* Posts Grid */}
-      <div className="">
-        {filteredPosts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPosts.map((post) => (
-            <div
-              key={post.id}
-              className="bg-gray-900 text-white p-5 rounded-2xl shadow-md hover:shadow-lg transition-transform hover:scale-[1.02] cursor-pointer"
-            >
-              <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
-              <p className="text-sm text-gray-300 mb-4">{post.excerpt}</p>
-              <span className="text-xs text-gray-400">{post.date}</span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-center text-gray-500 mt-10">No posts found.</p>
-      )}
+      <div>
+        {loading ? (
+          <p className="text-center text-gray-500 mt-10">Loading posts...</p>
+        ) : error ? (
+          <p className="text-center text-red-500 mt-10">{error}</p>
+        ) : filteredPosts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPosts.map((post) => (
+              <div
+                key={post._id}
+                className="bg-gray-900 text-white p-5 rounded-2xl shadow-md hover:shadow-lg transition-transform hover:scale-[1.02] cursor-pointer"
+                onClick={() => navigate(`/posts/${post._id}`)}
+              >
+                {post.featuredImage && (
+                  <img
+                    src={post.featuredImage}
+                    alt={post.title}
+                    className="w-full h-48 object-contain rounded-lg mb-4"
+                  />
+                )}
+                <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
+                <p className="text-sm text-gray-300 mb-4">{post.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-400">
+                    {formatDate(post.createdAt)}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    By {post.author?.username || "Unknown"}
+                  </span>
+                </div>
+                {post.tags && post.tags.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {post.tags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="text-xs bg-gray-700 text-gray-200 px-2 py-1 rounded"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500 mt-10">No posts found.</p>
+        )}
       </div>
     </div>
   );
-}
+};
 
-export default Posts
+export default Posts;

@@ -38,7 +38,7 @@ const ProductCard = ({ product, handleDelete, handleEdit }) => {
 
   return (
     <>
-      <div className="w-[250px] h-[400px] flex flex-col justify-between bg-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200">
+      <div className=" w-[300px]  lg:w-[250px] h-[400px] flex flex-col justify-between bg-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200">
         {/* Product Image */}
         <Link to={`/products/${product._id}`}>
           <div

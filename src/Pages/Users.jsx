@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-
 const Users = () => {
   const [users, setUsers] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
 
@@ -15,7 +13,7 @@ const Users = () => {
   const fetchUsers = async () => {
     try {
       const res = await axios.get("http://localhost:3000/api/users", {
-        withCredentials: true
+        withCredentials: true,
       });
       setUsers(res.data);
     } catch (error) {
@@ -26,7 +24,7 @@ const Users = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/users/${id}`, {
-        withCredentials: true
+        withCredentials: true,
       });
       setUsers((prev) => prev.filter((user) => user._id !== id));
     } catch (error) {
@@ -35,21 +33,22 @@ const Users = () => {
   };
 
   const handleRoleChange = async (userId, newRole) => {
-       setUsers((prev) =>
-        prev.map((user) =>
-          user._id === userId ? { ...user, Role: newRole } : user
-        )
-      );
+    setUsers((prev) =>
+      prev.map((user) =>
+        user._id === userId ? { ...user, Role: newRole } : user
+      )
+    );
 
-      try {
-         await axios.put(`http://localhost:3000/api/users/${userId}`, { newRole }, {
-          withCredentials: true
-         });
-  }   catch (error) {
-    console.error("Error updating user role:", error);
-  }
-}
-    
+    try {
+      await axios.put(
+        `http://localhost:3000/api/users/${userId}`,
+        { newRole },
+        { withCredentials: true }
+      );
+    } catch (error) {
+      console.error("Error updating user role:", error);
+    }
+  };
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
@@ -65,10 +64,13 @@ const Users = () => {
   };
 
   return (
-    <div className="w-[83vw] h-screen bg-gray-50 text-gray-900 p-8 overflow-auto">
-      <h1 className="text-3xl font-bold mb-6">Users Management</h1>
+    <div className="w-full min-h-screen bg-gray-50 text-gray-900 p-6 md:p-8 overflow-auto">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6">
+        Users Management
+      </h1>
 
-      <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-200 bg-white">
+      {/* Desktop / Tablet - Horizontal Table */}
+      <div className="hidden md:block overflow-x-auto rounded-lg shadow-lg border border-gray-200 bg-white">
         <table className="min-w-full text-left">
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
@@ -82,10 +84,7 @@ const Users = () => {
           </thead>
           <tbody>
             {currentUsers.map((user) => (
-              <tr
-                key={user._id}
-                className="hover:bg-gray-50 transition"
-              >
+              <tr key={user._id} className="hover:bg-gray-50 transition">
                 <td className="py-3 px-4 text-gray-600 font-mono">{user._id}</td>
                 <td className="py-3 px-4">{user.Name}</td>
                 <td className="py-3 px-4">{user.Email}</td>
@@ -95,7 +94,9 @@ const Users = () => {
                 <td className="py-3 px-4">
                   <select
                     value={user.Role}
-                    onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                    onChange={(e) =>
+                      handleRoleChange(user._id, e.target.value)
+                    }
                     className="border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
                     <option value="User">User</option>
@@ -103,12 +104,6 @@ const Users = () => {
                   </select>
                 </td>
                 <td className="py-3 px-4 space-x-2">
-                  <button
-                    onClick={() => alert("Edit functionality not implemented")}
-                    className="bg-yellow-400 hover:bg-yellow-500 px-3 py-1 rounded text-sm font-medium transition"
-                  >
-                    Edit
-                  </button>
                   <button
                     onClick={() => handleDelete(user._id)}
                     className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm font-medium text-white transition"
@@ -120,7 +115,10 @@ const Users = () => {
             ))}
             {currentUsers.length === 0 && (
               <tr>
-                <td colSpan={6} className="text-center py-6 text-gray-500 italic">
+                <td
+                  colSpan={6}
+                  className="text-center py-6 text-gray-500 italic"
+                >
                   No users found.
                 </td>
               </tr>
@@ -129,6 +127,54 @@ const Users = () => {
         </table>
       </div>
 
+      {/* Mobile - Vertical Card Layout */}
+      <div className="md:hidden space-y-4">
+        {currentUsers.map((user) => (
+          <div
+            key={user._id}
+            className="bg-white border border-gray-200 rounded-lg shadow p-4 space-y-2"
+          >
+            <p className="text-sm text-gray-500">
+              <span className="font-semibold">ID:</span> {user._id}
+            </p>
+            <p>
+              <span className="font-semibold">Name:</span> {user.Name}
+            </p>
+            <p>
+              <span className="font-semibold">Email:</span> {user.Email}
+            </p>
+            <p>
+              <span className="font-semibold">Role:</span> {user.Role}
+            </p>
+            <div>
+              <span className="font-semibold">Manage:</span>
+              <select
+                value={user.Role}
+                onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                className="ml-2 border border-gray-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                <option value="User">User</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+            <div className="flex justify-center pt-2">
+              <button
+                onClick={() => handleDelete(user._id)}
+                className="flex-1 bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm font-medium text-white transition"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+        {currentUsers.length === 0 && (
+          <p className="text-center py-6 text-gray-500 italic">
+            No users found.
+          </p>
+        )}
+      </div>
+
+      {/* Pagination */}
       <div className="m-auto mt-6 flex justify-center items-center gap-4">
         <button
           onClick={handlePrev}

@@ -13,6 +13,7 @@ import UserLogin from "./Pages/UserLogin"
 import OrderDetails from "./Pages/OrderDetails"
 import Posts from "./Pages/Posts"
 import CreatePost from "./Pages/CreatePost"
+import PostDetail from "./Pages/PostDetails"
 
 const App = () => {
   return(
@@ -23,6 +24,7 @@ const App = () => {
       <Route path="products" element={<Products />} />
       <Route path="orders" element={<Orders />} />
       <Route path="posts" element={<Posts />}/>
+      <Route path="posts/:id" element={<PostDetail />}/>
       <Route path="create-post" element={<CreatePost />}/>
       <Route path="users" element={<Users />} />
       <Route path="settings" element={<Settings />} />

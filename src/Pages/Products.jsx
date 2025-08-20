@@ -117,11 +117,11 @@ const Products = () => {
   const totalPages = Math.ceil(filteredProducts.length / productPerPage);
 
   return (
-    <section className="w-[83vw] min-h-screen p-6 bg-gray-50 text-gray-800 overflow-y-auto">
+    <section className="w-full min-h-screen p-4 sm:p-6 bg-gray-50 text-gray-800">
       {/* Search + Filter + Upload */}
-      <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
         {/* Search Bar */}
-        <div className="flex items-center bg-white border border-gray-200 shadow-sm px-4 py-2 rounded-lg gap-2 w-full sm:w-96">
+        <div className="flex items-center bg-white border border-gray-200 shadow-sm px-4 py-2 rounded-lg gap-2 w-[70vw] sm:w-96">
           <BiSearch size={20} className="text-gray-500" />
           <input
             type="text"
@@ -133,11 +133,11 @@ const Products = () => {
         </div>
 
         {/* Filter + Upload */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-[85vw] sm:w-auto">
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-white border border-gray-200 shadow-sm text-gray-700 px-4 py-2 rounded-lg"
+            className="bg-white border border-gray-200 shadow-sm text-gray-700 px-4 py-2 rounded-lg w-full sm:w-auto"
           >
             <option>All Categories</option>
             <option>Hand Bag & Fashion Bag</option>
@@ -147,7 +147,7 @@ const Products = () => {
 
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all shadow-sm"
+            className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all shadow-sm w-full sm:w-auto"
           >
             <FiUpload />
             Upload Product
@@ -156,7 +156,7 @@ const Products = () => {
       </div>
 
       {/* Products List */}
-      <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 place-items-center">
         {currentProducts.length > 0 ? (
           currentProducts.map(product => (
             <ProductCard
@@ -167,26 +167,26 @@ const Products = () => {
             />
           ))
         ) : (
-          <p className="text-center text-gray-500">No product to display</p>
+          <p className="text-center text-gray-500 col-span-full">No product to display</p>
         )}
       </div>
 
       {/* Pagination */}
-      <div className="mt-6 flex justify-center items-center gap-4">
+      <div className="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4">
         <button
           onClick={handlePrev}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-50 rounded-lg shadow-sm"
+          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-50 rounded-lg shadow-sm w-full sm:w-auto"
         >
           Previous
         </button>
-        <span className="text-gray-700">
+        <span className="text-gray-700 text-center">
           Page {currentPage} of {totalPages}
         </span>
         <button
           onClick={handleNext}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-50 rounded-lg shadow-sm"
+          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-50 rounded-lg shadow-sm w-full sm:w-auto"
         >
           Next
         </button>
@@ -194,8 +194,111 @@ const Products = () => {
 
       {/* Upload Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex justify-center items-center">
-          {/* Modal Content remains same */}
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+          <div className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl p-6 w-full max-w-lg relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-3 right-3 text-white hover:text-red-400 transition"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-2xl font-semibold text-white mb-6 text-center">
+              Upload Product
+            </h2>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              {/* Title */}
+              <input
+                type="text"
+                name="Title"
+                value={formData.Title}
+                onChange={handleChange}
+                placeholder="Product Title"
+                className="bg-white/30 border border-white/40 text-white placeholder-gray-200 rounded-lg px-4 py-2 outline-none"
+                required
+              />
+
+              {/* Price & Discount */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <input
+                  type="number"
+                  name="Price"
+                  value={formData.Price}
+                  onChange={handleChange}
+                  placeholder="Price"
+                  className="flex-1 bg-white/30 border border-white/40 text-white placeholder-gray-200 rounded-lg px-4 py-2 outline-none"
+                  required
+                />
+                <input
+                  type="number"
+                  name="Discount"
+                  value={formData.Discount}
+                  onChange={handleChange}
+                  placeholder="Discount (%)"
+                  className="flex-1 bg-white/30 border border-white/40 text-white placeholder-gray-200 rounded-lg px-4 py-2 outline-none"
+                />
+              </div>
+
+              {/* Category */}
+              <select
+                name="Category"
+                value={formData.Category}
+                onChange={handleChange}
+                className="bg-white/30 border border-white/40 text-white rounded-lg px-4 py-2 outline-none"
+                required
+              >
+                <option value="">Select Category</option>
+                <option>Hand Bag & Fashion Bag</option>
+                <option>Work and Professional Bag</option>
+                <option>Backpacks & Travel Bags</option>
+              </select>
+
+              {/* Image */}
+              <input
+                type="file"
+                name="Image"
+                onChange={handleChange}
+                accept="image/*"
+                className="bg-white/30 border border-white/40 text-white rounded-lg px-4 py-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
+                required
+              />
+
+              {/* Color Picker */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <label htmlFor="BGColor" className="text-white text-md">
+                  Background Color:
+                </label>
+                <input
+                  type="color"
+                  name="BGColor"
+                  id="BGColor"
+                  value={formData.BGColor}
+                  onChange={handleChange}
+                  className="w-full sm:w-[330px] h-10 p-1 rounded-lg border border-white/40 cursor-pointer"
+                />
+              </div>
+
+              {/* Description */}
+              <textarea
+                name="Description"
+                value={formData.Description}
+                onChange={handleChange}
+                placeholder="Product Description"
+                rows={3}
+                className="bg-white/30 border border-white/40 text-white placeholder-gray-200 rounded-lg px-4 py-2 outline-none resize-none"
+              />
+
+              {/* Submit */}
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 font-semibold shadow-lg transition-all"
+              >
+                Upload
+              </button>
+            </form>
+          </div>
         </div>
       )}
     </section>
