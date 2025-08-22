@@ -279,9 +279,12 @@ const Dashboard = () => {
 
     {/* Recent Orders */}
 <section className="bg-gradient-to-br from-white to-gray-50 p-5 sm:p-6 rounded-2xl shadow-lg mb-6 border border-gray-100">
-  <h2 className="text-xl font-bold mb-5 text-gray-800 border-b pb-2">📦 Recent Orders</h2>
+  <h2 className="text-xl font-bold mb-5 text-gray-800 border-b pb-2">
+    📦 Recent Orders
+  </h2>
 
-  <div className="w-full">
+  {/* Desktop Table (hidden on mobile) */}
+  <div className="hidden md:block w-full overflow-x-auto">
     <table className="w-full table-fixed border-collapse text-xs sm:text-sm md:text-base">
       <thead>
         <tr className="bg-gradient-to-r from-blue-50 to-purple-50 text-gray-700">
@@ -348,7 +351,61 @@ const Dashboard = () => {
       </tbody>
     </table>
   </div>
+
+  {/* Mobile Vertical Table (hidden on desktop) */}
+  <div className="block md:hidden space-y-4">
+    {loading ? (
+      <p className="text-center py-6 text-gray-500 italic">
+        Loading recent orders...
+      </p>
+    ) : orders.length === 0 ? (
+      <p className="text-center py-6 text-gray-500 italic">
+        No recent orders found.
+      </p>
+    ) : (
+      orders.map((order) => (
+        <div
+          key={order._id}
+          className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 space-y-2 hover:bg-blue-50/50 transition-colors"
+        >
+          <p className="text-xs text-gray-500">Order ID:</p>
+          <p className="font-mono text-sm font-semibold text-gray-700">
+            #{order._id.slice(-6)}
+          </p>
+
+          <p className="text-xs text-gray-500">Customer:</p>
+          <p className="text-gray-800 font-medium">{order.UserID?.Name || "Unknown"}</p>
+
+          <p className="text-xs text-gray-500">Products:</p>
+          <p className="text-gray-700 text-sm">
+            {order.Products && order.Products.length > 0
+              ? order.Products.map((p) => p.ProductID?.Title).filter(Boolean).join(", ")
+              : "N/A"}
+          </p>
+
+          <p className="text-xs text-gray-500">Price:</p>
+          <p className="text-blue-600 font-semibold">Rs. {order.TotalPrice}</p>
+
+          <p className="text-xs text-gray-500">Status:</p>
+          <span
+            className={`px-2 py-1 rounded-full text-[10px] font-bold tracking-wide ${
+              order.Status === "Delivered"
+                ? "bg-green-100 text-green-700"
+                : order.Status === "Pending"
+                ? "bg-yellow-100 text-yellow-700"
+                : order.Status === "Cancelled"
+                ? "bg-red-100 text-red-700"
+                : "bg-blue-100 text-blue-700"
+            }`}
+          >
+            {order.Status}
+          </span>
+        </div>
+      ))
+    )}
+  </div>
 </section>
+
 
 
     {/* Best Selling Products */}
