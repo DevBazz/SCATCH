@@ -24,15 +24,15 @@ const App = () => {
     <Routes>
       <Route path="/dashboard" element={<AdminLayout />}>
       <Route index  element={<Dashboard />}/>
-      <Route path="products" element={<Products />} />
-      <Route path="orders" element={<Orders />} />
-      <Route path="posts" element={<Posts />}/>
-      <Route path="posts/:id" element={<PostDetail />}/>
-      <Route path="create-post" element={<CreatePost />}/>
-      <Route path="users" element={<Users />} />
-      <Route path="settings" element={<Settings />} />
-      <Route path="products/:id" element={<ProductDetails />} />
-      <Route path="orders/:id" element={<OrderDetails />}/>
+      <Route path="/dashboard/products" element={<Products />} />
+      <Route path="/dashboard/orders" element={<Orders />} />
+      <Route path="/dashboard/posts" element={<Posts />}/>
+      <Route path="/dashboard/posts/:id" element={<PostDetail />}/>
+      <Route path="/dashboard/create-post" element={<CreatePost />}/>
+      <Route path="/dashboard/users" element={<Users />} />
+      <Route path="/dashboard/settings" element={<Settings />} />
+      <Route path="/dashboard/products/:id" element={<ProductDetails />} />
+      <Route path="/dashboard/orders/:id" element={<OrderDetails />}/>
       </Route>
 
       <Route path="admin/signup" element={<AdminSignup /> } />

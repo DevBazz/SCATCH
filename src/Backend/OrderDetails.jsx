@@ -33,7 +33,7 @@ const OrderDetails = () => {
     <div className="ml-0 md:ml-[17vw] min-h-screen bg-gray-50 p-4 md:p-8">
       {/* Back Button */}
       <button
-        onClick={() => navigate("/orders")}
+        onClick={() => navigate("/dashboard/orders")}
         className="mb-6 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md transition"
       >
         ← Back to Orders

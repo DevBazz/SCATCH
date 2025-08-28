@@ -126,7 +126,7 @@ const Orders = () => {
               <tr key={order.id} className="hover:bg-gray-50 transition">
                 <td className="py-3 px-4 text-gray-600 font-mono">
                   <Link
-                    to={`/orders/${order.id}`}
+                    to={`/dashboard/orders/${order.id}`}
                     className="text-blue-600 hover:underline"
                   >
                     {order.id}
@@ -195,7 +195,7 @@ const Orders = () => {
           >
             <div className="flex justify-between items-center">
               <Link
-                to={`/orders/${order.id}`}
+                to={`/dashboard/orders/${order.id}`}
                 className="text-blue-600 font-mono font-semibold hover:underline"
               >
                 {order.id}

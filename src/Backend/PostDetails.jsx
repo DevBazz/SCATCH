@@ -50,7 +50,7 @@ const PostDetails = () => {
         
         {/* Back Button */}
         <button
-          onClick={() => navigate("/posts")}
+          onClick={() => navigate("/dashboard/posts")}
           className="mb-6 inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 
             text-white px-5 py-2 rounded-lg shadow-lg hover:scale-105 transition transform"
         >

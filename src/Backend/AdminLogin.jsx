@@ -24,7 +24,7 @@ const AdminLogin = () => {
       });
       setMessage("Login successful!");
       
-       navigate("/")      
+       navigate("/dashboard")      
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed");
     }

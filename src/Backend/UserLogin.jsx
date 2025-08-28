@@ -19,13 +19,11 @@ const UserLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/login", formData);
+      const res = await axios.post("http://localhost:3000/api/auth/login", formData, {
+        withCredentials: true
+      });
       setMessage("Login successful! Redirecting...");
 
-      localStorage.setItem("userToken", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-
-      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
 
       setTimeout(() => navigate("/"), 1500);
     } catch (err) {

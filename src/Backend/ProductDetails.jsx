@@ -32,7 +32,7 @@ const ProductDetails = () => {
     <div className="bg-zinc-950 text-white p-6 w-full min-h-screen">
       {/* Back Link */}
       <Link
-        to="/products"
+        to="/dashboard/products"
         className="text-yellow-400 hover:underline mb-6 inline-block"
       >
         ← Back to Products

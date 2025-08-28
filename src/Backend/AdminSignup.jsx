@@ -10,6 +10,7 @@ const AdminSignup = () => {
   });
 
   const [message, setMessage] = useState("");
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,6 +23,7 @@ const AdminSignup = () => {
         ...formData,
       });
       setMessage("Signup successful! You can now log in.");
+      navigate("/admin/login")
     } catch (err) {
       setMessage(err.response?.data?.message || "Signup failed");
     }

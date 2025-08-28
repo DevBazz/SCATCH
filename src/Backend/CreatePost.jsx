@@ -7,7 +7,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { Node } from "@tiptap/core";
 import "../TipTap.css";
 
-// Custom Image extension with alignment support
+
 const CustomImage = Node.create({
   name: 'image',
   group: 'block',

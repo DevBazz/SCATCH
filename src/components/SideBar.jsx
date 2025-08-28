@@ -31,7 +31,7 @@ const SideBar = () => {
         <div className="flex flex-col justify-center items-center gap-10 lg:gap-16">
           {/* Logo */}
           <NavLink
-            to="/"
+            to="/dashboard"
             className="w-full h-[5vh] flex pl-4 gap-3 text-2xl mt-10 text-white"
           >
             <GiShoppingBag />
@@ -41,7 +41,7 @@ const SideBar = () => {
           {/* Navigation */}
           <nav className="w-full h-[70vh] flex flex-col gap-6 items-start text-xl text-zinc-300 tracking-wide">
             <NavLink
-              to="/"
+              to="/dashboard"
               className="flex w-full pl-4 items-center gap-5 hover:text-white"
               onClick={() => setIsOpen(false)}
             >
@@ -50,7 +50,7 @@ const SideBar = () => {
             </NavLink>
 
             <NavLink
-              to="/products"
+              to="/dashboard/products"
               className="flex w-full pl-4 items-center gap-5 hover:text-white"
               onClick={() => setIsOpen(false)}
             >
@@ -59,7 +59,7 @@ const SideBar = () => {
             </NavLink>
 
             <NavLink
-              to="/orders"
+              to="/dashboard/orders"
               className="flex w-full pl-4 items-center gap-5 hover:text-white"
               onClick={() => setIsOpen(false)}
             >
@@ -68,7 +68,7 @@ const SideBar = () => {
             </NavLink>
 
             <NavLink
-              to="/posts"
+              to="/dashboard/posts"
               className="flex w-full pl-4 items-center gap-5 hover:text-white"
               onClick={() => setIsOpen(false)}
             >
@@ -77,7 +77,7 @@ const SideBar = () => {
             </NavLink>
 
             <NavLink
-              to="/users"
+              to="/dashboard/users"
               className="flex w-full pl-4 items-center gap-5 hover:text-white"
               onClick={() => setIsOpen(false)}
             >
@@ -86,7 +86,7 @@ const SideBar = () => {
             </NavLink>
 
             <NavLink
-              to="/settings"
+              to="/dashboard/settings"
               className="flex w-full pl-4 items-center gap-5 hover:text-white"
               onClick={() => setIsOpen(false)}
             >

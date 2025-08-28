@@ -58,7 +58,7 @@ const Posts = () => {
 
         {/* Create Post Button */}
         <button
-          onClick={() => navigate("/create-post")}
+          onClick={() => navigate("/dashboard/create-post")}
           className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-5 py-2 rounded-lg shadow-lg hover:opacity-90 transition"
         >
           Create Post
@@ -77,7 +77,7 @@ const Posts = () => {
               <div
                 key={post._id}
                 className="bg-gray-900 text-white p-5 rounded-2xl shadow-md hover:shadow-lg transition-transform hover:scale-[1.02] cursor-pointer"
-                onClick={() => navigate(`/posts/${post._id}`)}
+                onClick={() => navigate(`/dashboard/posts/${post._id}`)}
               >
                 {post.featuredImage && (
                   <img
