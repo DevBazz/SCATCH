@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import QuickView from "../../components/QuickView";
+import { Link } from "react-router-dom";
 
 const products = [
   { id: 1, name: "Classic Easy Zipper Tote", price: "$298", img: "/images/tote.jpg" },
@@ -98,6 +99,7 @@ const Shop = () => {
         <main className="md:col-span-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.map((product) => (
+              <Link to={`shop/products/${product.id}`}>
               <div key={product.id} className="group relative">
                 <div className="overflow-hidden rounded-md relative">
                   <img
@@ -119,6 +121,7 @@ const Shop = () => {
                 <h3 className="mt-4 text-lg font-medium">{product.name}</h3>
                 <p className="text-gray-600">{product.price}</p>
               </div>
+              </Link>
             ))}
           </div>
 

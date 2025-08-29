@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaChevronLeft, FaChevronRight, FaShoppingBag, FaHeart } from "react-icons/fa";
 
-const ProductDetails = () => {
+const ProductInfo = () => {
   // Example product (replace later with backend data)
   const product = {
     name: "Classic Easy Zipper Tote",
@@ -108,4 +108,4 @@ const ProductDetails = () => {
   );
 };
 
-export default ProductDetails;
+export default ProductInfo;

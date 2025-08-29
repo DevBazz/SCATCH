@@ -17,6 +17,14 @@ import PostDetail from "./Backend/PostDetails"
 import UserLayout from "./layout/UserLayout"
 import Home from "./Frontend/Pages/Home"
 import Shop from "./Frontend/Pages/Shop"
+import ProductInfo from "./Frontend/Pages/ProductInfo"
+import Cart from "./Frontend/Pages/Cart"
+import Checkout from "./Frontend/Pages/Checkout"
+import OrderConfirmation from "./Frontend/Pages/OrderConfirmation"
+import Profile from "./Frontend/Pages/Profile"
+import OrdersHistory from "./Frontend/Pages/OrdersHistory"
+import Wishlist from "./Frontend/Pages/Wishlist"
+
 
 const App = () => {
   return(
@@ -43,6 +51,13 @@ const App = () => {
       <Route path="/" element={<UserLayout />}>
        <Route index element={<Home />}/>
        <Route path="shop" element={<Shop />}/>
+       <Route path="products" element={<ProductInfo />}/>
+       <Route path="cart" element={<Cart />}/>
+       <Route path="checkout" element={<Checkout />}/>
+       <Route path="orderconfirmation" element={<OrderConfirmation />}/>
+       <Route path="/profile" element={<Profile />} />
+       <Route path="/orders" element={<OrdersHistory />} />
+       <Route path="/wishlist" element={<Wishlist />} />
       </Route>
     </Routes>
    </Router>
