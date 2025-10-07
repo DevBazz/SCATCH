@@ -1,14 +1,54 @@
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
-
-const products = [
-  { id: 1, name: "Classic Easy Zipper Tote", price: "$298", img: "/images/tote.jpg" },
-  { id: 2, name: "Concertina Phone Bag", price: "$248", img: "/images/phone-bag.jpg" },
-  { id: 3, name: "Single-Origin Cashmere Beanie", price: "$98", img: "/images/beanie.jpg" },
-  { id: 4, name: "Alpaca Wool Cropped Cardigan", price: "$248", img: "/images/cardigan.jpg" },
-];
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Home = () => {
+  const [newArrivals, setNewArrivals] = useState([]);
+  const [categories, setCategories] = useState({});
+
+  // Fetch New Arrivals
+  useEffect(() => {
+    const fetchNewArrivals = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/api/products?limit=4&sort=-createdAt",
+          { withCredentials: true }
+        );
+        setNewArrivals(res.data);
+      } catch (error) {
+        console.log("Failed to fetch new arrivals", error);
+      }
+    };
+
+    fetchNewArrivals();
+  }, []);
+
+  // Fetch Products and Group by Category
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/products", {
+          withCredentials: true,
+        });
+        const products = res.data;
+
+        // Group by category
+        const grouped = products.reduce((acc, product) => {
+          const cat = product.Category || "Other";
+          if (!acc[cat]) acc[cat] = [];
+          acc[cat].push(product);
+          return acc;
+        }, {});
+        setCategories(grouped);
+      } catch (error) {
+        console.log("Failed to fetch categories", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <div className="w-full">
       {/* Hero Section */}
@@ -29,78 +69,134 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Categories */}
+      {/* ✅ Dynamic Shop by Category Section */}
       <section className="container mx-auto px-6 py-16">
-        <h2 className="text-2xl font-semibold mb-8 text-center">Shop by Category</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Link
-            to="/shop/backpacks"
-            className="relative group overflow-hidden rounded-lg"
-          >
-            <img
-              src="/images/backpack.jpg"
-              alt="Backpacks"
-              className="w-full h-72 object-cover group-hover:scale-105 transition"
-            />
-            <span className="absolute bottom-4 left-4 bg-white px-3 py-1 rounded-md shadow">
-              Backpacks
-            </span>
-          </Link>
-          <Link
-            to="/shop/totes"
-            className="relative group overflow-hidden rounded-lg"
-          >
-            <img
-              src="/images/tote.jpg"
-              alt="Totes"
-              className="w-full h-72 object-cover group-hover:scale-105 transition"
-            />
-            <span className="absolute bottom-4 left-4 bg-white px-3 py-1 rounded-md shadow">
-              Totes
-            </span>
-          </Link>
-          <Link
-            to="/shop/crossbody"
-            className="relative group overflow-hidden rounded-lg"
-          >
-            <img
-              src="/images/crossbody.jpg"
-              alt="Crossbody"
-              className="w-full h-72 object-cover group-hover:scale-105 transition"
-            />
-            <span className="absolute bottom-4 left-4 bg-white px-3 py-1 rounded-md shadow">
-              Crossbody
-            </span>
-          </Link>
+        <h2 className="text-2xl font-semibold mb-8 text-center">
+          Shop by Category
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+  {Object.entries(categories).map(([category, items]) => {
+    const featured = items[0]; // first product as thumbnail
+    return (
+      <Link
+        key={category}
+        to={`/shop?category=${category}`}
+        className="relative group rounded-2xl overflow-hidden bg-gray-50 shadow-md hover:shadow-2xl transition-all duration-500"
+      >
+        {/* Image */}
+        <div className="overflow-hidden">
+          <img
+            src={featured.Image || "/placeholder.png"}
+            alt={category}
+            className="w-full h-80 object-contain transform group-hover:scale-110 transition-transform duration-500"
+            style={{ backgroundColor: featured.BGColor || "#f8f8f8" }}
+          />
         </div>
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        {/* Category Label */}
+        <div className="absolute bottom-5 left-5 flex flex-col items-start">
+          <span className="text-white text-2xl font-semibold tracking-wide drop-shadow-lg">
+            {category}
+          </span>
+          <span className="text-sm text-gray-200 opacity-90">
+            {items.length} {items.length > 1 ? "products" : "product"}
+          </span>
+        </div>
+
+        {/* Hover Button */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500">
+          <span className="bg-white text-gray-900 px-5 py-2 rounded-full text-sm font-medium shadow hover:bg-gray-100 transition">
+            Explore
+          </span>
+        </div>
+      </Link>
+    );
+  })}
+</div>
+
       </section>
 
       {/* New Arrivals */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gray-100 py-16">
         <div className="container mx-auto px-6">
-          <h2 className="text-2xl font-semibold mb-8 text-center">New Arrivals</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {products.map((product) => (
-              <div key={product.id} className="text-center">
-                <img
-                  src={product.img}
-                  alt={product.name}
-                  className="w-full h-64 object-cover rounded-md mb-4"
-                />
-                <h3 className="text-lg font-medium">{product.name}</h3>
-                <p className="text-gray-600">{product.price}</p>
-              </div>
-            ))}
+          {/* Header + View All */}
+          <div className="flex flex-col md:flex-row items-center justify-between mb-10">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 md:mb-0">
+              ✨ New Arrivals
+            </h2>
+            <Link to="/shop">
+              <button className="text-sm md:text-base font-medium text-white bg-black px-5 py-2 rounded-full hover:bg-gray-800 transition duration-300 shadow-md">
+                View All
+              </button>
+            </Link>
+          </div>
+
+          {/* Product Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {newArrivals.map((product) => {
+              const discount = product.Discount || 20;
+              const discountedPrice = product.Price
+                ? (product.Price - product.Price * (discount / 100)).toFixed(2)
+                : null;
+
+              return (
+                <div
+                  key={product._id}
+                  className="group relative p-5 rounded-2xl shadow-sm hover:shadow-xl bg-white hover:-translate-y-2 transition-all duration-300"
+                  style={{ backgroundColor: product.BGColor || "#fff" }}
+                >
+                  {/* Discount Badge */}
+                  {discount > 0 && (
+                    <span className="absolute top-4 left-4 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
+                      -{discount}% OFF
+                    </span>
+                  )}
+
+                  {/* Product Image */}
+                  <div className="overflow-hidden rounded-xl bg-gray-100">
+                    <img
+                      src={product.Image || "/placeholder.png"}
+                      alt={product.Title}
+                      className="w-full h-64 object-contain group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="mt-4 text-center">
+                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-black transition">
+                      {product.Title}
+                    </h3>
+                    <div className="flex justify-center items-center gap-2 mt-1">
+                      <p className="text-lg font-bold text-black">
+                        ${discountedPrice}
+                      </p>
+                      {discountedPrice && (
+                        <p className="text-gray-500 line-through text-sm">
+                          ${product.Price}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Brand Story / Promo */}
       <section className="container mx-auto px-6 py-16 text-center">
-        <h2 className="text-2xl font-semibold mb-4">The Art of Fewer, Better Choices</h2>
+        <h2 className="text-2xl font-semibold mb-4">
+          The Art of Fewer, Better Choices
+        </h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Opting for quality over quantity means selecting timeless, durable, and responsibly made items. 
-          Our collection is crafted sustainably with longevity in mind—bags designed to stay with you for years.
+          Opting for quality over quantity means selecting timeless, durable,
+          and responsibly made items. Our collection is crafted sustainably with
+          longevity in mind—bags designed to stay with you for years.
         </p>
       </section>
 
@@ -109,10 +205,26 @@ const Home = () => {
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-2xl font-semibold mb-8">Shop Instagram</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <img src="/images/insta1.jpg" alt="Insta look" className="w-full h-56 object-cover rounded-md" />
-            <img src="/images/insta2.jpg" alt="Insta look" className="w-full h-56 object-cover rounded-md" />
-            <img src="/images/insta3.jpg" alt="Insta look" className="w-full h-56 object-cover rounded-md" />
-            <img src="/images/insta4.jpg" alt="Insta look" className="w-full h-56 object-cover rounded-md" />
+            <img
+              src="/images/insta1.jpg"
+              alt="Insta look"
+              className="w-full h-56 object-cover rounded-md"
+            />
+            <img
+              src="/images/insta2.jpg"
+              alt="Insta look"
+              className="w-full h-56 object-cover rounded-md"
+            />
+            <img
+              src="/images/insta3.jpg"
+              alt="Insta look"
+              className="w-full h-56 object-cover rounded-md"
+            />
+            <img
+              src="/images/insta4.jpg"
+              alt="Insta look"
+              className="w-full h-56 object-cover rounded-md"
+            />
           </div>
         </div>
       </section>

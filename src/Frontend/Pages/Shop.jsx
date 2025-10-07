@@ -1,32 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import QuickView from "../../components/QuickView";
 import { Link } from "react-router-dom";
 
-const products = [
-  { id: 1, name: "Classic Easy Zipper Tote", price: "$298", img: "/images/tote.jpg" },
-  { id: 2, name: "Concertina Phone Bag", price: "$248", img: "/images/phone-bag.jpg" },
-  { id: 3, name: "Wool Cashmere Sweater Coat", price: "$398", img: "/images/coat.jpg" },
-  { id: 4, name: "Crossbody Leather Bag", price: "$220", img: "/images/crossbody.jpg" },
-  { id: 5, name: "Backpack Minimalist", price: "$180", img: "/images/backpack.jpg" },
-  { id: 6, name: "Travel Duffel Bag", price: "$320", img: "/images/duffel.jpg" },
-  { id: 7, name: "Mini Tote", price: "$140", img: "/images/mini-tote.jpg" },
-  { id: 8, name: "Shoulder Bag", price: "$200", img: "/images/shoulder.jpg" },
-];
+import useProductStore from "../../store/productStore";
+import useCartStore from "../../store/cartStore";
 
 const categories = ["All", "Backpacks", "Totes", "Crossbody", "Duffels"];
 const colors = ["Black", "Brown", "Beige", "White", "Green"];
 
 const Shop = () => {
+  
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
 
+  const { products, loading, error, fetchProducts } = useProductStore();
+  const { addToCart } = useCartStore();
+  
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  // ✅ Filter products by category name
   const filteredProducts =
     selectedCategory === "All"
       ? products
       : products.filter((p) =>
-          p.name.toLowerCase().includes(selectedCategory.toLowerCase())
+          p.category?.toLowerCase().includes(selectedCategory.toLowerCase())
         );
 
   return (
@@ -98,31 +99,91 @@ const Shop = () => {
         {/* Products Grid */}
         <main className="md:col-span-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((product) => (
-              <Link to={`shop/products/${product.id}`}>
-              <div key={product.id} className="group relative">
-                <div className="overflow-hidden rounded-md relative">
-                  <img
-                    src={product.img}
-                    alt={product.name}
-                    className="w-full h-80 object-cover group-hover:scale-105 transition"
-                  />
-                  {/* Eye Icon for Quick View */}
-                  <button
-                    onClick={() => {
-                      setSelectedProduct(product);
-                      setQuickViewOpen(true);
-                    }}
-                    className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
-                  >
-                    <FaEye className="text-gray-700 hover:text-black" size={18} />
-                  </button>
-                </div>
-                <h3 className="mt-4 text-lg font-medium">{product.name}</h3>
-                <p className="text-gray-600">{product.price}</p>
-              </div>
-              </Link>
-            ))}
+            {filteredProducts.map((product) => {
+    const discountPercent = product.Discount || 20; // Default 20% if not provided
+    const discountedPrice = product.Price - (product.Price * discountPercent) / 100;
+
+  return (
+    <div
+      key={product._id}
+      className="group relative rounded-2xl p-5 shadow-md hover:shadow-2xl bg-white transition-all duration-300 flex flex-col justify-between border border-gray-100"
+      style={{
+        backgroundColor: product.BGColor || "#f9fafb",
+      }}
+    >
+      {/* Discount Badge */}
+      {discountPercent > 0 && (
+        <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md z-10">
+          -{discountPercent}%
+        </span>
+      )}
+
+      {/* Product Image */}
+      <Link to={`/shop/products/${product._id}`}>
+        <div className="overflow-hidden rounded-xl relative">
+          <img
+            src={product.Image || "/placeholder.png"}
+            alt={product.Title}
+            className="w-full h-72 object-contain group-hover:scale-110 transition-transform duration-300"
+          />
+
+          {/* Eye Icon for Quick View */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              setSelectedProduct(product);
+              setQuickViewOpen(true);
+            }}
+            className="absolute top-3 right-3 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-105"
+          >
+            <FaEye className="text-gray-700 hover:text-black" size={18} />
+          </button>
+        </div>
+      </Link>
+
+      {/* Product Info */}
+      <div className="mt-4 flex flex-col items-start">
+        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-black transition">
+          {product.Title}
+        </h3>
+        <p className="text-sm text-gray-500 mb-2">{product.Category}</p>
+
+        {/* Price Section */}
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-xl font-bold text-gray-900">
+            ${discountedPrice.toFixed(2)}
+          </span>
+          <span className="text-sm text-gray-500 line-through">
+            ${product.Price.toFixed(2)}
+          </span>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex w-full gap-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+          <button
+            className="flex-1 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-black transition"
+            onClick={() => addToCart(product, 1)}
+          >
+            Add to Cart
+          </button>
+          <button
+            className="flex-1 py-2 border border-gray-900 text-gray-900 text-sm font-medium rounded-lg hover:bg-gray-900 hover:text-white transition"
+            onClick={(e) => {
+              e.preventDefault();
+              // TODO: Buy now logic here
+              console.log(`Buying ${product.Title}`);
+            }}
+          >
+            Buy Now
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+})}
+
+
           </div>
 
           {/* Pagination */}

@@ -19,21 +19,21 @@ const QuickView = ({ product, isOpen, onClose }) => {
         {/* Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Product Image */}
-          <div className="w-full h-80 overflow-hidden rounded-lg">
+          <div className="w-full h-80 overflow-hidden rounded-lg " style={{ backgroundColor: product.BGColor || "#f5f5f5" } }>
             <img
-              src={product.img}
-              alt={product.name}
-              className="w-full h-full object-cover"
+              src={product.Image}
+              alt={product.Title}
+              className="w-full h-full object-contain"
             />
           </div>
 
           {/* Product Info */}
           <div className="flex flex-col justify-between">
             <div>
-              <h2 className="text-2xl font-bold mb-2">{product.name}</h2>
-              <p className="text-lg text-gray-600 mb-4">{product.price}</p>
-              <p className="text-gray-500 mb-6">
-                {product.description ||
+              <h2 className="text-2xl font-bold mb-2">{product.Title}</h2>
+              <p className="text-lg text-green-600/80 mb-4">${product.Price}</p>
+              <p className="text-gray-600 text-[13.5px] font leading-relaxed mb-8">
+                {product.Description ||
                   "Crafted with premium materials, this bag is built to last with timeless style."}
               </p>
             </div>
@@ -43,9 +43,7 @@ const QuickView = ({ product, isOpen, onClose }) => {
               <button className="flex-1 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition flex items-center justify-center">
                 <FaShoppingBag className="mr-2" /> Add to Cart
               </button>
-              <button className="flex-1 border px-4 py-2 rounded-md hover:bg-gray-100 transition">
-                View Details
-              </button>
+              
             </div>
           </div>
         </div>

@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUser, FaShoppingBag, FaSearch, FaBars, FaTimes } from "react-icons/fa";
+import useCartStore from "../store/cartStore";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { cartItems } = useCartStore();
 
   const navLinks = [
     { title: "Shop", path: "/shop" },
@@ -29,7 +32,7 @@ const Header = () => {
 
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold tracking-wide uppercase">
-            CEIN
+            SCATCH
           </Link>
 
           {/* Desktop Nav */}
@@ -56,7 +59,7 @@ const Header = () => {
             <Link to="/cart" className="relative hover:text-gray-600">
               <FaShoppingBag className="text-xl" />
               <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full px-1">
-                2
+                {cartItems.length}
               </span>
             </Link>
           </div>
