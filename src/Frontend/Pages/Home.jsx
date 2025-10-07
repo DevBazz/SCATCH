@@ -188,7 +188,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Brand Story / Promo */}
+      
       <section className="container mx-auto px-6 py-16 text-center">
         <h2 className="text-2xl font-semibold mb-4">
           The Art of Fewer, Better Choices
