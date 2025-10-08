@@ -1,10 +1,25 @@
 import { Link } from "react-router-dom";
 import { FaTrash, FaEye, FaShoppingBag } from "react-icons/fa";
 import useCartStore from "../../store/cartStore";
+import {loadStripe} from "@stripe/stripe-js"
+import axios from "axios";
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, clearCart, totalAmount } =
     useCartStore();
+
+   const makePayment = async () => {
+      try {
+        const stripe = await loadStripe("pk_test_51SFgk6FVLrmfHwy21pisAHu61uz9TS4jf5268pXnX9sVjmt32lGqun4u2H0ZqBmAXpIORkoB1h9pnUIr9sTpT4Pm00dcZLHfeN")
+        const res = await axios.post("http://localhost:3000/api/orders/create-checkout-session", { products: cartItems })
+
+        console.log("Stripe session response:", res.data);
+        
+        window.location.href = res.data.url;
+      } catch (error) {
+        console.log(error.message)
+      }
+   }
 
   return (
     <div className="container mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -135,11 +150,12 @@ const Cart = () => {
           </div>
 
           <div className="flex flex-col gap-4">
-            <Link to="/checkout">
-              <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition shadow">
+            
+              <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition shadow" 
+              onClick={() => makePayment()}>
                 Proceed to Checkout
               </button>
-            </Link>
+            
             <button
               onClick={clearCart}
               className="w-full border border-gray-400 text-gray-700 py-3 rounded-lg hover:bg-gray-100 transition"

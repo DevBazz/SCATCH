@@ -38,7 +38,11 @@ const useCartStore = create(persist((set, get) => ({
     },
     calculateTotals: () => {
         const { cartItems } = get();
-        const totalAmount = cartItems.reduce((sum, item) => sum + item.Price * item.quantity, 0);
+        const totalAmount = cartItems.reduce((sum, item) => {
+        const discount = item.Discount || 0; // default to 0 if no discount
+       const discountedPrice = item.Price - (item.Price * discount) / 100;
+      return sum + discountedPrice * item.quantity;
+}, 0);
         const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
         set({ totalAmount, totalItems });
     }
