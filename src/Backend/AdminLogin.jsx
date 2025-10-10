@@ -1,15 +1,18 @@
+// Backend/AdminLogin.jsx
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useAuthStore from "../store/authStore";
 
 const AdminLogin = () => {
+  const { setUser } = useAuthStore();
+
   const [formData, setFormData] = useState({
     Email: "",
     Password: "",
-  }, );
+  });
 
   const [message, setMessage] = useState("");
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,11 +23,21 @@ const AdminLogin = () => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:3000/api/auth/admin/login", formData, {
-        withCredentials: true
+        withCredentials: true,
       });
-      setMessage("Login successful!");
-      
-       navigate("/dashboard")      
+
+      const { user, token } = res.data;
+
+      setUser(user, token);
+
+      setMessage("Admin login successful! Redirecting...");
+
+      // ✅ Only allow admin role
+      if (user.Role === "Admin") {
+        navigate("/dashboard");
+      } else {
+        setMessage("Access denied. Not an admin.");
+      }
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed");
     }
@@ -62,11 +75,6 @@ const AdminLogin = () => {
           >
             Login
           </button>
-          <div className="text-center mt-4">
-              <Link to="/admin/signup" className="text-yellow-400 hover:underline">
-                Don't have an account? Sign Up
-              </Link>
-          </div>
         </form>
       </div>
     </div>

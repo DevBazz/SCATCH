@@ -3,6 +3,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+
 const Home = () => {
   const [newArrivals, setNewArrivals] = useState([]);
   const [categories, setCategories] = useState({});

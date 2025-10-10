@@ -1,9 +1,12 @@
-
+// Frontend/Backend/UserLogin.jsx
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import useAuthStore from "../store/authStore";
 
 const UserLogin = () => {
+  const { setUser } = useAuthStore();
+
   const [formData, setFormData] = useState({
     Email: "",
     Password: "",
@@ -20,12 +23,22 @@ const UserLogin = () => {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:3000/api/auth/login", formData, {
-        withCredentials: true
+        withCredentials: true,
       });
+
+      const { user, token } = res.data;
+
+      // ✅ Save user and token globally
+      setUser(user, token);
+
       setMessage("Login successful! Redirecting...");
 
-
-      setTimeout(() => navigate("/"), 1500);
+      // ✅ Redirect by role (for safety)
+      if (user.Role === "Admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed");
     }

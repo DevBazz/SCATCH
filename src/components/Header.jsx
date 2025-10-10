@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUser, FaShoppingBag, FaSearch, FaBars, FaTimes } from "react-icons/fa";
 import useCartStore from "../store/cartStore";
+import useAuthStore from "../store/authStore";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { cartItems } = useCartStore();
+  const { logout } = useAuthStore();
 
   const navLinks = [
     { title: "Shop", path: "/shop" },
@@ -53,9 +55,9 @@ const Header = () => {
             <button className="hover:text-gray-600">
               <FaSearch className="text-xl" />
             </button>
-            <Link to="/login" className="hover:text-gray-600">
+              <button onClick={logout} className="hover:text-gray-600">
               <FaUser className="text-xl" />
-            </Link>
+              </button>
             <Link to="/cart" className="relative hover:text-gray-600">
               <FaShoppingBag className="text-xl" />
               <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full px-1">

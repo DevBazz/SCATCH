@@ -15,7 +15,7 @@ const useProductStore = create((set) => ({
             })
             set({products: res.data, loading: false})
         } catch (error) {
-            set({error: err.message, loading: false})
+            set({error: error.message, loading: false})
         }
     },
 
@@ -27,7 +27,7 @@ const useProductStore = create((set) => ({
             })
             set({product: res.data, loading: false})
         } catch (error) {
-            set({error: err.message, loading: false})
+            set({error: error.message, loading: false})
         }
     }
 }))
